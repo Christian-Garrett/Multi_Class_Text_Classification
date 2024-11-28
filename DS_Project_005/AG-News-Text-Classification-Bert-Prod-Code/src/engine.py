@@ -1,16 +1,17 @@
-# import required libraries
-import pandas as pd
-import ktrain
-from ktrain import text
-from datasets import list_datasets
-from datasets import load_dataset
-from ML_Pipeline import model
-from ML_Pipeline import utils
-from ML_Pipeline import feature_engineering
-
+from pathlib import Path
+import sys
 import warnings
-
 warnings.simplefilter(action='ignore')
+
+module_path = Path(__file__).parents[1]
+sys.path.append(str(module_path))
+
+from src.ML_Pipeline import model
+from src.ML_Pipeline import utils
+from src.ML_Pipeline import feature_engineering
+
+MAX_LEN=512
+
 
 try:
     # Load Dataset and show details:
@@ -23,11 +24,13 @@ try:
 
     # Data Preprocessing using K-Train:
     print('##### Data Preprocessing using K-Train #####')
-    (X_train, y_train), (X_test, y_test), preprocessing_var = feature_engineering.perform_feature_engineering(ag_news_train_df, ag_news_test_df, 512)
+    (X_train, y_train), (X_test, y_test), preprocessing_var = \
+        feature_engineering.perform_feature_engineering(ag_news_train_df, ag_news_test_df, MAX_LEN)
 
     # Create & Train BERT Model:
     print('##### Create & Train BERT Model #####')
-    bert_learner = model.create_and_train_bert_model(X_train, y_train, X_test, y_test, preprocessing_var)
+    bert_learner = \
+        model.create_and_train_bert_model(X_train, y_train, X_test, y_test, preprocessing_var)
 
     # Check Model performance during training and validation:
     print('##### Check Model performance during training and validation #####')
@@ -36,10 +39,6 @@ try:
     # Saving Bert Model Fine-tuned on AG News Dataset:
     print('##### Saving Bert Model Fine-tuned on AG News Dataset #####')
     model.save_fine_tuned_bert_model(bert_learner, preprocessing_var)
-
-    # Load Fine-tuned Bert Model for further predictions:
-    print('##### Load Fine-tuned Bert Model for further predictions #####')
-    bert_predictor = model.load_model()
 
 except Exception as e:
     print('!! Exception Details: !!\n', e.__class__)

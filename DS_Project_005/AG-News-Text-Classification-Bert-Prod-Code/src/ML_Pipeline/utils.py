@@ -1,12 +1,14 @@
 import pandas as pd
 import tensorflow as tf
-from datasets import list_datasets, load_dataset
+from datasets import load_dataset
+
 
 # check the gpu settings
 def check_gpu_info():
     print("Tensorflow version : ", tf.__version__)
     print("GPU available : ", bool(tf.test.is_gpu_available))
     print("GPU name : ", tf.test.gpu_device_name())
+
 
 # import and the display the dataset
 def load_and_display_dataset_details():
@@ -33,6 +35,7 @@ def load_and_display_dataset_details():
     print(ag_news_dataset['train']['text'][100000])
     print(ag_news_dataset['train']['label'][100000])
     return None
+
 
 # convert the data to dataframes
 def load_and_convert_data_to_df():
